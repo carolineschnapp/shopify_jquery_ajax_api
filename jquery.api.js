@@ -33,15 +33,15 @@ Shopify.onError = function(XMLHttpRequest, textStatus) {
 };
 
 Shopify.onCartUpdate = function(cart) {
-  alert("There are now "+ cart.item_count + " items in the cart.");
+  alert('There are now ' + cart.item_count + ' items in the cart.');
 };  
 
 Shopify.onItemAdded = function(line_item) {
-  alert(line_item.title + ' Was added to your shopping cart');
+  alert(line_item.title + ' was added to your shopping cart.');
 };
 
 Shopify.onProduct = function(product) {
-  alert('Received everything we ever wanted to know about '+ product.title);
+  alert('Received everything we ever wanted to know about ' + product.title);
 };
 
 /* Tools */
@@ -57,9 +57,9 @@ Shopify.formatMoney = function(cents, format) {
   case 'amount_no_decimals':
     value = floatToString(cents/100.0, 0);
     break;
-	case 'amount_with_comma_separator':
-		value = floatToString(cents/100.0, 2).replace(/\./, ',');
-		break;
+  case 'amount_with_comma_separator':
+    value = floatToString(cents/100.0, 2).replace(/\./, ',');
+    break;
   }    
   return formatString.replace(patt, value);
 };
@@ -73,155 +73,156 @@ Shopify.resizeImage = function(image, size) {
     }    
   } catch (e) { return image; }
 };
+
 /* API */
   
 Shopify.addItem = function(variant_id, quantity, callback) {
   var quantity = quantity || 1;
-	var params = {
-  	type: 'POST',
-  	url: '/cart/add.js',
-  	data: 'quantity='+quantity+'&id='+variant_id,
-  	dataType: 'json',
-  	success: function(response) { 
-			if ((typeof callback) === 'function') {
-				callback(response);
-			}
-			else {
-				Shopify.onItemAdded(response);
-			}
-		},
+  var params = {
+    type: 'POST',
+    url: '/cart/add.js',
+    data: 'quantity='+quantity+'&id='+variant_id,
+    dataType: 'json',
+    success: function(response) { 
+      if ((typeof callback) === 'function') {
+        callback(response);
+      }
+      else {
+        Shopify.onItemAdded(response);
+      }
+    },
     error: function(XMLHttpRequest, textStatus) {
-		  Shopify.onError(XMLHttpRequest, textStatus);
-		}		
-	};
+      Shopify.onError(XMLHttpRequest, textStatus);
+    }   
+  };
   jQuery.ajax(params);
 };
 
 Shopify.addItemFromForm = function(form_id, callback) {
-		var params = {
-			type: 'POST',
-			url: '/cart/add.js',
-			data: jQuery('#' + form_id).serialize(),
-			dataType: 'json',
-			success: function(cart) { 
-				if ((typeof callback) === 'function') {
-					callback(cart);
-				}
-				else {
-					Shopify.onItemAdded(cart);
-				}
-			},
-  		error: function(XMLHttpRequest, textStatus) {
-	  		Shopify.onError(XMLHttpRequest, textStatus);
-			}		
-		};
-		jQuery.ajax(params);
+    var params = {
+      type: 'POST',
+      url: '/cart/add.js',
+      data: jQuery('#' + form_id).serialize(),
+      dataType: 'json',
+      success: function(cart) { 
+        if ((typeof callback) === 'function') {
+          callback(cart);
+        }
+        else {
+          Shopify.onItemAdded(cart);
+        }
+      },
+      error: function(XMLHttpRequest, textStatus) {
+        Shopify.onError(XMLHttpRequest, textStatus);
+      }   
+    };
+    jQuery.ajax(params);
 };
 
 Shopify.getCart = function(callback) {
   jQuery.getJSON('/cart.js', function (cart, textStatus) {
-	  if ((typeof callback) === 'function') {
-			callback(cart);
-		}
-		else {
-			Shopify.onCartUpdate(cart);
-		}	  
-	});	
+    if ((typeof callback) === 'function') {
+      callback(cart);
+    }
+    else {
+      Shopify.onCartUpdate(cart);
+    }   
+  }); 
 };  
 
 Shopify.getProduct = function(handle, callback) {
   jQuery.getJSON('/products/'+handle+'.js', function (product, textStatus) {
-	  if ((typeof callback) === 'function') {
-			callback(product);
-		}
-		else {
-			Shopify.onProduct(product);
-		}	
-	});
+    if ((typeof callback) === 'function') {
+      callback(product);
+    }
+    else {
+      Shopify.onProduct(product);
+    } 
+  });
 };
 
-Shopify.changeItem = function(variant_id, quantity) {
-	var params = {
-		type: 'POST',
-		url: '/cart/change.js',
-		data:  'quantity='+quantity+'&id='+variant_id,
-		dataType: 'json',
-		success: function(cart) { 
-			if ((typeof callback) === 'function') {
-				callback(cart);
-			}
-			else {
-				Shopify.onCartUpdate(cart);
-			}
-		},
-		error: function(XMLHttpRequest, textStatus) {
-  		Shopify.onError(XMLHttpRequest, textStatus);
-		}
-	};
-	jQuery.ajax(params);            
+Shopify.changeItem = function(variant_id, quantity, callback) {
+  var params = {
+    type: 'POST',
+    url: '/cart/change.js',
+    data:  'quantity='+quantity+'&id='+variant_id,
+    dataType: 'json',
+    success: function(cart) { 
+      if ((typeof callback) === 'function') {
+        callback(cart);
+      }
+      else {
+        Shopify.onCartUpdate(cart);
+      }
+    },
+    error: function(XMLHttpRequest, textStatus) {
+      Shopify.onError(XMLHttpRequest, textStatus);
+    }
+  };
+  jQuery.ajax(params);            
 };
 
-Shopify.removeItem = function(variant_id) {
-	var params = {
-		type: 'POST',
-		url: '/cart/change.js',
-		data:  'quantity=0&id='+variant_id,
-		dataType: 'json',
-		success: function(cart) { 
-			if ((typeof callback) === 'function') {
-				callback(cart);
-			}
-			else {
-				Shopify.onCartUpdate(cart);
-			}
-		},
-		error: function(XMLHttpRequest, textStatus) {
-  		Shopify.onError(XMLHttpRequest, textStatus);
-		}
-	};
-	jQuery.ajax(params);
+Shopify.removeItem = function(variant_id, callback) {
+  var params = {
+    type: 'POST',
+    url: '/cart/change.js',
+    data:  'quantity=0&id='+variant_id,
+    dataType: 'json',
+    success: function(cart) { 
+      if ((typeof callback) === 'function') {
+        callback(cart);
+      }
+      else {
+        Shopify.onCartUpdate(cart);
+      }
+    },
+    error: function(XMLHttpRequest, textStatus) {
+      Shopify.onError(XMLHttpRequest, textStatus);
+    }
+  };
+  jQuery.ajax(params);
 };
 
-Shopify.clear = function() {
-	var params = {
-		type: 'POST',
-		url: '/cart/clear.js',
-		data:  '',
-		dataType: 'json',
-		success: function(cart) { 
-			if ((typeof callback) === 'function') {
-				callback(cart);
-			}
-			else {
-				Shopify.onCartUpdate(cart);
-			}
-		},
-		error: function(XMLHttpRequest, textStatus) {
-  		Shopify.onError(XMLHttpRequest, textStatus);
-		}
-	};
-	jQuery.ajax(params);
+Shopify.clear = function(callback) {
+  var params = {
+    type: 'POST',
+    url: '/cart/clear.js',
+    data:  '',
+    dataType: 'json',
+    success: function(cart) { 
+      if ((typeof callback) === 'function') {
+        callback(cart);
+      }
+      else {
+        Shopify.onCartUpdate(cart);
+      }
+    },
+    error: function(XMLHttpRequest, textStatus) {
+      Shopify.onError(XMLHttpRequest, textStatus);
+    }
+  };
+  jQuery.ajax(params);
 };
 
 Shopify.updateCartFromForm = function(form_id, callback) {
-	var params = {
-		type: 'POST',
-		url: '/cart/update.js',
-		data: jQuery('#' + form_id).serialize(),
-		dataType: 'json',
-		success: function(cart) {
-			if ((typeof callback) === 'function') {
-				callback(cart);
-			}
-			else {
-				Shopify.onCartUpdate(cart);
-			}
-		},
-		error: function(XMLHttpRequest, textStatus) {
-  		Shopify.onError(XMLHttpRequest, textStatus);
-		}
-	};
-	jQuery.ajax(params);
+  var params = {
+    type: 'POST',
+    url: '/cart/update.js',
+    data: jQuery('#' + form_id).serialize(),
+    dataType: 'json',
+    success: function(cart) {
+      if ((typeof callback) === 'function') {
+        callback(cart);
+      }
+      else {
+        Shopify.onCartUpdate(cart);
+      }
+    },
+    error: function(XMLHttpRequest, textStatus) {
+      Shopify.onError(XMLHttpRequest, textStatus);
+    }
+  };
+  jQuery.ajax(params);
 };
 
 /* Used by Tools */
