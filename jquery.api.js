@@ -83,12 +83,12 @@ Shopify.addItem = function(variant_id, quantity, callback) {
     url: '/cart/add.js',
     data: 'quantity='+quantity+'&id='+variant_id,
     dataType: 'json',
-    success: function(response) { 
+    success: function(line_item) { 
       if ((typeof callback) === 'function') {
-        callback(response);
+        callback(line_item);
       }
       else {
-        Shopify.onItemAdded(response);
+        Shopify.onItemAdded(line_item);
       }
     },
     error: function(XMLHttpRequest, textStatus) {
