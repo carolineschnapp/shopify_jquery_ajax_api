@@ -58,6 +58,19 @@ Shopify.onProduct = function(product) {
 
 /* Tools */
 
+/* 
+Examples of call:
+Shopify.formatMoney(600000, '€{{amount_with_comma_separator}} EUR')
+Shopify.formatMoney(600000, '€{{amount}} EUR')
+Shopify.formatMoney(600000, '${{amount_no_decimals}}')
+Shopify.formatMoney(600000, '{{ shop.money_format }}') in a Liquid template!
+
+In a Liquid template, you have access to a shop money formats with:
+{{ shop.money_format }}
+{{ shop.money_with_currency_format }}
+{{ shop.money_without_currency_format }}
+All these formats are editable on the Preferences page in your admin.
+*/
 Shopify.formatMoney = function(cents, format) {
   var value = '';
   var patt = /\{\{\s*(\w+)\s*\}\}/;
