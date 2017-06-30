@@ -91,10 +91,18 @@ Shopify.formatMoney = function(cents, format) {
 
 Shopify.resizeImage = function(image, size) {
   try {
-    if(size == 'original') { return image; }
-    else {      
-      var matches = image.match(/(.*\/[\w\-\_\.]+)\.(\w{2,4})/);
-      return matches[1] + '_' + size + '.' + matches[2];
+    if (size == 'original') { return image; }
+    else {
+      var output;
+      var matches = image.match(/(.*\/[\w\-\_\.]+)\.(\w{2,4})(.*)/);
+      
+      output = matches[1] + '_' + size + '.' + matches[2];
+
+      if (matches[3]) {
+        output.contact(matches[3]);
+      }
+
+      return output;
     }    
   } catch (e) { return image; }
 };
